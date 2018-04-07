@@ -1,20 +1,17 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { LoginComponent } from "./login.component";
-import { Injectable } from "@angular/core";
+import { AuthServiceService } from "../auth-service.service";
 
-class MockAuthService {
-  authenticated = false;
-  isAuthenticated() {
-    return this.authenticated;
-  }
-}
+//A Spy is a feature of Jasmine which lets you take an existing class, function, object and mock it in such a
+//way that you can control what gets returned from functions.
+
 describe("LoginComponent", () => {
   let component: LoginComponent;
-  let service: MockAuthService;
+  let service: AuthServiceService;
 
   beforeEach(() => {
-    service = new MockAuthService();
+    service = new AuthServiceService();
     component = new LoginComponent(service);
   });
   afterEach(() => {
@@ -23,11 +20,13 @@ describe("LoginComponent", () => {
   });
 
   it("canLogin should return false when user is not authenticated", () => {
-    service.authenticated = false;
+    spyOn(service, "isAuthenticated").and.returnValue(false);
     expect(component.needsLogin()).toBeTruthy();
+    expect(service.isAuthenticated).toHaveBeenCalled();
   });
   it("canLogin should return true when user is  authenticated", () => {
-    service.authenticated = true;
+    spyOn(service, "isAuthenticated").and.returnValue(true);
     expect(component.needsLogin()).toBeFalsy();
+    expect(service.isAuthenticated).toHaveBeenCalled();
   });
 });
