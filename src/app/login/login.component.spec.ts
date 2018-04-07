@@ -3,30 +3,51 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { LoginComponent } from "./login.component";
 import { AuthServiceService } from "../auth-service.service";
 
-//A Spy is a feature of Jasmine which lets you take an existing class, function, object and mock it in such a
-//way that you can control what gets returned from functions.
-
 describe("LoginComponent", () => {
   let component: LoginComponent;
-  let service: AuthServiceService;
+  let fixture: ComponentFixture<LoginComponent>;
+  let authService: AuthServiceService;
 
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [LoginComponent],
+        providers: [AuthServiceService]
+      }).compileComponents();
+    })
+  );
   beforeEach(() => {
-    service = new AuthServiceService();
-    component = new LoginComponent(service);
-  });
-  afterEach(() => {
-    component = null;
-    service = null;
+    //create the components and text fixtures
+    //fixture is a wrapper for components and its services
+    fixture = TestBed.createComponent(LoginComponent);
+
+    //extract test component from fixture
+    component = fixture.componentInstance;
+
+    //service provided to testbed
+    authService = TestBed.get(AuthServiceService);
   });
 
-  it("canLogin should return false when user is not authenticated", () => {
-    spyOn(service, "isAuthenticated").and.returnValue(false);
+  it("canLogin returns false when the user is not authenticated", () => {
+    spyOn(authService, "isAuthenticated").and.returnValue(false);
     expect(component.needsLogin()).toBeTruthy();
-    expect(service.isAuthenticated).toHaveBeenCalled();
+    expect(authService.isAuthenticated).toHaveBeenCalled();
   });
-  it("canLogin should return true when user is  authenticated", () => {
-    spyOn(service, "isAuthenticated").and.returnValue(true);
+
+  it("canLogin returns false when the user is not authenticated", () => {
+    spyOn(authService, "isAuthenticated").and.returnValue(true);
     expect(component.needsLogin()).toBeFalsy();
-    expect(service.isAuthenticated).toHaveBeenCalled();
+    expect(authService.isAuthenticated).toHaveBeenCalled();
   });
 });
+
+/*  When to use Test Bed
+It allows us to test the interaction of a directive or component with it’s template.
+
+It allows us to easily test change detection.
+
+It allows us to test and use Angulars DI framework,
+
+It allows us to test using the NgModule configuration we use in our application.
+
+It allows us to test user interaction via clicks & input fields*/
